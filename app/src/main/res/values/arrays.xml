@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="entries_language_list">
+        <item>ENGLISH</item>
+        <item>JAPANESE</item>
+        <item>CHINESE (SIMPLE)</item>
+        <item>CHINESE (TRADITIONAL)</item>
+    </string-array>
+
+    <string-array name="values_language_list">
+        <item>en</item>
+        <item>ja</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+    </string-array>
+
+</resources>

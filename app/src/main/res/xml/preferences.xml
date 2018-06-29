@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?android:attr/colorBackground">
+
+    <PreferenceCategory android:title="Translate">
+
+        <ListPreference
+            android:dialogTitle="source language"
+            android:entries="@array/entries_language_list"
+            android:entryValues="@array/values_language_list"
+            android:key="KEY_TRANS_SOURCE_LNG"
+            android:title="source language" />
+
+        <ListPreference
+            android:dialogTitle="target language"
+            android:entries="@array/entries_language_list"
+            android:entryValues="@array/values_language_list"
+            android:key="KEY_TRANS_TARGET_LNG"
+            android:title="target language" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

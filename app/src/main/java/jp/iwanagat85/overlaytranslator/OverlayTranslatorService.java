@@ -19,8 +19,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.api.services.vision.v1.model.TextAnnotation;
@@ -33,13 +31,14 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import jp.iwanagat85.overlaytranslator.data.SettingRepository;
 import jp.iwanagat85.overlaytranslator.domain.CloudVisionApiService;
 import jp.iwanagat85.overlaytranslator.domain.OverlayManager;
 import jp.iwanagat85.overlaytranslator.domain.ScreenManager;
 import jp.iwanagat85.overlaytranslator.domain.api.GoogleAppsScriptService;
 import jp.iwanagat85.overlaytranslator.domain.api.TranslateResponse;
-import jp.iwanagat85.overlaytranslator.util.BitmapUtils;
-import jp.iwanagat85.overlaytranslator.util.ClipboardUtils;
+import jp.iwanagat85.overlaytranslator.utils.BitmapUtils;
+import jp.iwanagat85.overlaytranslator.utils.ClipboardUtils;
 
 public class OverlayTranslatorService extends Service {
 
@@ -47,8 +46,6 @@ public class OverlayTranslatorService extends Service {
 
     public static final String EXTRA_RESULT_CODE = "EXTRA_RESULT_CODE";
     public static final String EXTRA_RESULT_INTENT = "EXTRA_RESULT_INTENT";
-
-    private boolean mIsLongClick = false;
 
     @Inject
     ScreenManager mScreenManager;
@@ -58,6 +55,8 @@ public class OverlayTranslatorService extends Service {
     CloudVisionApiService mCloudVisionApiService;
     @Inject
     GoogleAppsScriptService mGoogleAppsScriptService;
+    @Inject
+    SettingRepository mSettingRepository;
 
     @Override
     public void onCreate() {
@@ -135,10 +134,14 @@ public class OverlayTranslatorService extends Service {
                 Bitmap cropBmp = BitmapUtils.crop(screenBmp, rect.left, rect.top, rect.width(), rect.height());
                 mOverlayManager.startProgress();
 
+                // TODO
+                String sourceLanguage = mSettingRepository.getSourceLanguage().blockingGet();
+                String targetLanguage = mSettingRepository.getTargetLanguage().blockingGet();
+
                 Single.just(cropBmp)
                         //.flatMap(bitmap -> debug())
                         .flatMap(bitmap -> mCloudVisionApiService.getTextAnnotation(bitmap))
-                        .flatMap(textAnnotation -> mGoogleAppsScriptService.translate(textAnnotation.getText(), "en", "ja"))
+                        .flatMap(textAnnotation -> mGoogleAppsScriptService.translate(textAnnotation.getText(), sourceLanguage, targetLanguage))
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleObserver<TranslateResponse>() {
@@ -179,17 +182,8 @@ public class OverlayTranslatorService extends Service {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        switch (newConfig.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                Log.d(TAG, "Orientation: PORTRAIT");
-                mOverlayManager.setOrientationIcon(R.drawable.ic_stay_primary_portrait);
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-                Log.d(TAG, "Orientation: LANDSCAPE");
-                mOverlayManager.setOrientationIcon(R.drawable.ic_stay_primary_landscape);
-                break;
-        }
+        stopSelf();
+        MediaProjectionActivity.start(this);
     }
 
     // DEBUG

@@ -9,9 +9,9 @@
         android:id="@+id/capture_area"
         android:layout_width="256dp"
         android:layout_height="64dp"
-        android:minWidth="256dp"
-        android:minHeight="64dp"
         android:background="@drawable/bg_button_border"
+        android:minHeight="64dp"
+        android:minWidth="256dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -35,6 +35,7 @@
                 android:id="@+id/button_reload"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/ic_refresh"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +44,7 @@
                 android:id="@+id/button_to_clip"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/ic_attachment"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -53,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="4dp"
-                android:text="TextView"
+                android:text="Sample Text"
                 android:textColor="@android:color/white"
                 android:textSize="8sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -66,31 +68,44 @@
 
     <LinearLayout
         android:id="@+id/settings_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/button_close"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/ic_close" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#99000000"
+        android:background="#000000"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@+id/capture_area"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/button_move"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/ic_open_with" />
-
-        <Button
             android:id="@+id/button_settings"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="2dp"
             android:background="@drawable/ic_settings" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <Button
+            android:id="@+id/button_move"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/ic_open_with" />
 
-        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

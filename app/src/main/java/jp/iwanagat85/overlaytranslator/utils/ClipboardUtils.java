@@ -1,4 +1,4 @@
-package jp.iwanagat85.overlaytranslator.util;
+package jp.iwanagat85.overlaytranslator.utils;
 
 import android.content.ClipData;
 import android.content.ClipDescription;

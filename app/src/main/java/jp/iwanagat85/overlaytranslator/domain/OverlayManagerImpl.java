@@ -2,6 +2,7 @@ package jp.iwanagat85.overlaytranslator.domain;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -28,6 +29,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import jp.iwanagat85.overlaytranslator.OverlayTranslatorService;
 import jp.iwanagat85.overlaytranslator.R;
 
 public class OverlayManagerImpl implements OverlayManager {
@@ -48,6 +50,8 @@ public class OverlayManagerImpl implements OverlayManager {
     private Button mCaptureToClipButton;
     private Button mMoveButton;
     private Button mSettingsButton;
+    private View mSettingsContainer;
+    private Button mCloseButton;
 
     private WindowManager.LayoutParams mParams = null;
 
@@ -89,8 +93,12 @@ public class OverlayManagerImpl implements OverlayManager {
         mTextContainer = mOverlayView.findViewById(R.id.text_container);
         mTranslatedText = mOverlayView.findViewById(R.id.text_translated);
 
-        mSettingsButton = mOverlayView.findViewById(R.id.button_settings);
         mMoveButton = mOverlayView.findViewById(R.id.button_move);
+        mSettingsButton = mOverlayView.findViewById(R.id.button_settings);
+        mSettingsContainer = mOverlayView.findViewById(R.id.settings_container);
+        mCloseButton = mOverlayView.findViewById(R.id.button_close);
+
+        mSettingsContainer.setVisibility(View.GONE);
 
         mParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -133,10 +141,8 @@ public class OverlayManagerImpl implements OverlayManager {
                     Point displaySize = new Point(size);
                     float centerX = event.getRawX() - (displaySize.x / 2);
                     float centerY = event.getRawY() - (displaySize.y / 2);
-                    float testX = mOverlayView.getWidth() / 2;
-                    float testY = mOverlayView.getHeight() / 2;
-                    mParams.x = (int) (centerX - testX);
-                    mParams.y = (int) (centerY + testY);
+                    mParams.x = (int) (centerX - (mOverlayView.getWidth() / 2));
+                    mParams.y = (int) (centerY);
                     mWindowManager.updateViewLayout(mOverlayView, mParams);
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -185,8 +191,21 @@ public class OverlayManagerImpl implements OverlayManager {
         });
 
         mSettingsButton.setOnClickListener(v -> {
+            if (mSettingsContainer.getVisibility() == View.GONE) {
+                mSettingsContainer.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.anim_slide_left));
+                mSettingsContainer.setVisibility(View.VISIBLE);
+            } else {
+                mSettingsContainer.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.anim_slide_right));
+                mSettingsContainer.setVisibility(View.GONE);
+            }
             if (mListener != null)
                 mListener.onSettingsButtonClicked(v);
+        });
+
+        mCloseButton.setOnClickListener(v -> {
+            Context context = v.getContext().getApplicationContext();
+            Intent intent = new Intent(context, OverlayTranslatorService.class);
+            context.stopService(intent);
         });
     }
 

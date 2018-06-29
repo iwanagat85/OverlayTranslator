@@ -45,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
             stopTranslateService();
         });
 
+        Button buttonSettings = findViewById(R.id.button_settings);
+        buttonSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void checkPermissions() {
