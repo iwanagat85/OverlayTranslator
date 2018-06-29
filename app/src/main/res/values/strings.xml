@@ -1,0 +1,3 @@
+<resources>
+    <string name="send_to_clipboard_message">Text was send to clipboard.</string>
+</resources>
